@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stopwatch Web Application</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1c7b9b; /* Set background color to light blue */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        #stopwatch {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        #lap-times {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            margin: 0 5px;
+            background-color: #007bff; /* Set background color to blue */
+            color: white; /* Set text color to white */
+            border: none; /* Remove button border */
+            border-radius: 5px; /* Add border radius */
+        }
+
+        button:hover {
+            background-color: #0056b3; /* Darker blue color on hover */
+        }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Stopwatch Web Application</h1>
+        <div id="stopwatch">00:00:00</div>
+        <div id="lap-times"></div>
+        <button id="start" onclick="startStopwatch()">Start</button>
+        <button id="pause" onclick="pauseStopwatch()">Pause</button>
+        <button id="reset" onclick="resetStopwatch()">Reset</button>
+        <button id="lap" onclick="recordLapTime()">Lap</button>
+    
+        <!-- Made with heart symbol by Sanjusha -->
+        <div class="footer">Made with ❤️ by Sanjusha</div>
+    </div>
+
+    <script>
+        let stopwatchInterval;
+        let startTime;
+        let elapsedTime = 0;
+        let lapTimes = [];
+        
+        function startStopwatch() {
+            startTime = Date.now() - elapsedTime;
+            stopwatchInterval = setInterval(updateStopwatch, 10);
+            document.getElementById('start').disabled = true;
+            document.getElementById('pause').disabled = false;
+        }
+        
+        function pauseStopwatch() {
+            clearInterval(stopwatchInterval);
+            document.getElementById('start').disabled = false;
+            document.getElementById('pause').disabled = true;
+        }
+        
+        function resetStopwatch() {
+            clearInterval(stopwatchInterval);
+            document.getElementById('start').disabled = false;
+            document.getElementById('pause').disabled = true;
+            elapsedTime = 0;
+            lapTimes = [];
+            updateStopwatch();
+            document.getElementById('lap-times').innerHTML = '';
+        }
+        
+        function recordLapTime() {
+            const lapTime = elapsedTime;
+            lapTimes.push(lapTime);
+            const lapIndex = lapTimes.length;
+            const lapTimeString = formatTime(lapTime);
+            const lapDiv = document.createElement('div');
+            lapDiv.textContent = `Lap ${lapIndex}: ${lapTimeString}`;
+            document.getElementById('lap-times').appendChild(lapDiv);
+        }
+        
+        function updateStopwatch() {
+            const currentTime = Date.now();
+            elapsedTime = currentTime - startTime;
+            document.getElementById('stopwatch').textContent = formatTime(elapsedTime);
+        }
+        
+        function formatTime(time) {
+            const ms = Math.floor((time % 1000) / 10);
+            const seconds = Math.floor((time / 1000) % 60);
+            const minutes = Math.floor((time / (1000 * 60)) % 60);
+            const hours = Math.floor((time / (1000 * 60 * 60)) % 24);
+            
+            return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}.${pad(ms)}`;
+        }
+        
+        function pad(num) {
+            return num.toString().padStart(2, '0');
+        }
+    </script>
+</body>
+</html>
